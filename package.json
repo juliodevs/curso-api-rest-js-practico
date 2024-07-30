@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/juliodevs/curso-api-rest-js-practico/issues"
   },
-  "homepage": "https://github.com/juliodevs/curso-api-rest-js-practico#readme"
+  "homepage": "https://github.com/juliodevs/curso-api-rest-js-practico#readme",
+  "dependencies": {
+    "axios": "^1.7.2",
+    "express": "^4.19.2"
+  }
 }
