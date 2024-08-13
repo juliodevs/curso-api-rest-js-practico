@@ -1,3 +1,7 @@
+// Data
+// const lang = globalObj.navigator.language
+// console.log(lang)
+
 const api = axios.create({
     baseURL: 'https://api.themoviedb.org/3/',
     headers: {
@@ -5,9 +9,34 @@ const api = axios.create({
     },
     params: {
       'api_key': API_KEY,
-      'languaje':'languaje=es-MX'
+       "language": navigator.language || "es-CO"
     },
   });
+
+  function likedMoviesList(){
+    const item = JSON.parse(localStorage.getItem('liked_movies'))
+    let movies;
+
+      if (item){
+        movies=item
+      }else{
+        movies={}
+      }
+    return movies;
+  }
+
+  function likeMovie(movie){
+    const likedMovies = likedMoviesList()
+   
+    if(likedMovies[movie.id]){
+      likedMovies[movie.id]= undefined
+    }else{
+      likedMovies[movie.id] = movie
+    }
+
+    localStorage.setItem('liked_movies',JSON.stringify(likedMovies))
+           
+  }
   
   
   // Utils
@@ -40,10 +69,7 @@ const api = axios.create({
     movies.forEach(movie => {
       const movieContainer = document.createElement('div');
       movieContainer.classList.add('movie-container');
-      movieContainer.addEventListener('click', () => {
-        location.hash = '#movie=' + movie.id;
-      });
-  
+        
       const movieImg = document.createElement('img');
       movieImg.classList.add('movie-img');
       movieImg.setAttribute('alt', movie.title);
@@ -51,6 +77,9 @@ const api = axios.create({
         lazyLoad ? 'data-img' : 'src',
         'https://image.tmdb.org/t/p/w300' + movie.poster_path,
       );
+      movieImg.addEventListener('click', () => {
+        location.hash = '#movie=' + movie.id;
+      });
 
       movieImg.addEventListener('error', ()=>{
         movieImg.setAttribute(
@@ -59,11 +88,26 @@ const api = axios.create({
         )
       })
 
+      const movieBtn = document.createElement('button')
+      movieBtn.classList.add('movie-btn')
+      //Valido si el objeto devuelto por la función likedMoviesList() contiene el objeto movie.id entonces le agrego clase
+      likedMoviesList()[movie.id] && movieBtn.classList.add('movie-btn--liked')
+      movieBtn.addEventListener('click',()=>{
+        movieBtn.classList.toggle('movie-btn--liked')
+        likeMovie(movie)
+
+        //esta línea de código asegura que si el hash de la URL es #home o si no hay hash en la URL, se ejecutará la función homePage().
+        if (location.hash.startsWith('#home') || !location.hash) { homePage(); } 
+       
+      })
+
       if(lazyLoad){
         lazyLoader.observe(movieImg)
       }      
   
+      
       movieContainer.appendChild(movieImg);
+      movieContainer.appendChild(movieBtn)
       container.appendChild(movieContainer);
     });
   }
@@ -219,11 +263,7 @@ const api = axios.create({
         clean:true
       }
     );
-
-    // const btnLoadMore = document.createElement('button')
-    // btnLoadMore.innerText = 'Cargar mas'
-    // btnLoadMore.addEventListener('click', getPaginatedTrendingMovies)
-    // genericSection.appendChild(btnLoadMore)
+  
   }
  
  
@@ -284,4 +324,29 @@ const api = axios.create({
     const relatedMovies = data.results;
   
     createMovies(relatedMovies, relatedMoviesContainer);
+  }
+
+  function getLikedMovies(){
+    const likedMovies = likedMoviesList()
+
+    //Creo un array con los valores de un objeto
+    const moviesArray = Object.values(likedMovies)
+
+    likedMoviesListArticle.innerHTML = '';
+
+    !moviesArray.length && likedMoviesSection.classList.add('inactive');
+    
+    createMovies(
+      moviesArray, 
+      likedMoviesListArticle,
+      {
+        lazyLoad:true,
+        clean:true
+      }
+    );
+
+    // if (location.hash == ''){
+    //   homePage();
+    // }
+  
   }
