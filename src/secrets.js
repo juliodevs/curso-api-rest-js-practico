@@ -1,0 +1,5 @@
+const TOKEN='eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwYzRjMjRlNzBkYjZjZGMzNDJkMTA5ZjEzMTBmOWQzNiIsIm5iZiI6MTcyMTgyMjU2My4zNzc3NzcsInN1YiI6IjY2OWMwNDhmYzg3YjhhMmVmZjY5YjViOSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.B4pL8_Qk9AdqmOpfih7Z5lUMR-8gz_DbwfrJnqvgrRE'
+
+const API_KEY='0c4c24e70db6cdc342d109f1310f9d36'
+
+//module.export = {TOKEN,API_KEY}
